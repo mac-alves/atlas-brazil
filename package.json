@@ -8,12 +8,11 @@
     "shapefile"
   ],
   "author": {
-    "name": "Carolina Bigonha",
-    "url": "http://carolinabigonha.com"
+    "name": "Mauricio Alves"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/carolinabigonha/br-atlas.git"
+    "url": "https://github.com/mac-alves/br-atrlas.git"
   },
   "devDependencies": {
     "d3": "3",
