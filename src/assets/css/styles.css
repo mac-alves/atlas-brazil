@@ -1,0 +1,42 @@
+/* CSS goes here. */
+svg {
+    border: 1px solid #000;
+}
+
+.subunit.P01 { fill: rgb(168, 168, 104) }
+.subunit.P02 { fill: rgb(113, 230, 230) }
+.subunit.P03 { fill: rgb(63, 90, 63) }
+.subunit.P04 { fill: rgb(155, 52, 155) }
+.subunit.P05 { fill: rgb(54, 54, 45) }
+.subunit.P06 { fill: rgb(32, 201, 201) }
+.subunit.P07 { fill: rgb(58, 78, 58) }
+.subunit.P08 { fill: rgb(65, 33, 65) }
+.subunit.P09 { fill: rgb(75, 75, 13) }
+.subunit.P010 { fill: rgb(124, 180, 180) }
+.subunit.P011 { fill: #cdc }
+.subunit.P012 { fill: rgb(218, 107, 218) }
+.subunit.P013 { fill: rgb(83, 83, 45) }
+.subunit.P014 { fill: rgb(4, 56, 56) }
+.subunit.P015 { fill: rgb(132, 145, 132) }
+.subunit.P016 { fill: rgb(226, 84, 226) }
+.subunit.P017 { fill: rgb(63, 63, 37) }
+.subunit.P018 { fill: rgb(28, 56, 56) }
+.subunit.P019 { fill: rgb(51, 182, 51) }
+.subunit.P020 { fill: rgb(73, 13, 73) }
+.subunit.P021 { fill: #ddc }
+
+.place,
+.place-label {
+    fill: #444;
+}
+
+.place {
+    width: 150px;
+    height: 150px;
+}
+
+text {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    pointer-events: none;
+}
