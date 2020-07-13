@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <style>
+
+        /* CSS goes here. */
+        svg {
+            border: 1px solid #000;
+        }
+
+        .subunit.ROSÁRIO { fill: rgb(168, 168, 104) }
+        .subunit.PRESIDENTE_DUTRA { fill: rgb(113, 230, 230) }
+        .subunit.PORTO_FRANCO { fill: rgb(63, 90, 63) }
+        .subunit.PINDARÉ { fill: rgb(155, 52, 155) }
+        .subunit.MÉDIO_MEARIM { fill: rgb(54, 54, 45) }
+        .subunit.LITORAL_OCIDENTAL_MARANHENSE { fill: rgb(32, 201, 201) }
+        .subunit.LENÇÓIS_MARANHENSES { fill: rgb(58, 78, 58) }
+        .subunit.ITAPECURU_MIRIM { fill: rgb(65, 33, 65) }
+        .subunit.IMPERATRIZ { fill: rgb(75, 75, 13) }
+        .subunit.GURUPI { fill: rgb(124, 180, 180) }
+        .subunit.GERAIS_DE_BALSAS { fill: #cdc }
+        .subunit.COELHO_NETO { fill: rgb(218, 107, 218) }
+        .subunit.CODÓ { fill: rgb(83, 83, 45) }
+        .subunit.CHAPADINHA { fill: rgb(4, 56, 56) }
+        .subunit.CHAPADAS_DO_ALTO_ITAPECURU { fill: rgb(132, 145, 132) }
+        .subunit.CHAPADAS_DAS_MANGABEIRAS { fill: rgb(226, 84, 226) }
+        .subunit.CAXIAS { fill: rgb(63, 63, 37) }
+        .subunit.BAIXO_PARNAÍBA_MARANHENSE { fill: rgb(28, 56, 56) }
+        .subunit.BAIXADA_MARANHENSE { fill: rgb(51, 182, 51) }
+        .subunit.ALTO_MEARIM_E_GRAJAÚ { fill: rgb(73, 13, 73) }
+        .subunit.AGLOMERAÇÃO_URBANA_DE_SÃO_LUÍS { fill: #ddc }
+        
+        .place,
+        .place-label {
+            fill: #444;
+        }
+
+        .place {
+            width: 150px;
+            height: 150px;
+        }
+
+        text {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <script>
+        var width = 480,
+            height = 720;
+
+        // var projection = d3.geo.mercator()
+        //     .center([0, 55.4])
+        //     .rotate([4.4, 0])
+        //     .parallels([10, 0])
+        //     // .scale(1200 * 5)
+        //     .translate([width / 2, height / 2]);
+
+        var projection = d3.geo.mercator()
+            .scale(1200 * 3)
+            .rotate([45.2,6,0])
+            .translate([width/2, height/2])
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        // topo/ma-meso
+        // uk subunits
+        d3.json("topo-using/ma.json", function(error, uk) {
+            if (error) return console.error(error);
+            console.log(uk);
+
+            svg.selectAll(".subunit")
+                .data(topojson.feature(uk, uk.objects.micro).features)
+                .enter().append("path")
+                .attr("class", function(d) { return "subunit " + d.id; })
+                .attr("d", path);
+
+            svg.append("path")
+                .datum(topojson.feature(uk, uk.objects.places))
+                .attr("d", path)
+                .attr("class", "place");
+
+            svg.selectAll(".place-label")
+                .data(topojson.feature(uk, uk.objects.places).features)
+                .enter().append("text")
+                .attr("class", "place-label")
+                .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
+                .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+                .attr("dy", ".35em")
+                .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+                .text(function(d) { return d.properties.name; });
+        });
+
+    </script>
+</body>
+</html>
