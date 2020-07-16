@@ -166,6 +166,15 @@ João Guilherme <joaaogui@gmail.com>
 Victor Navarro <victor.matias.navarro@gmail.com>
 Nihey Takizawa <nihey.takizawa@gmail.com>
 
+# links úteis
+ - posicionar mapa.
+ - `http://enjalot.github.io/intro-d3/maptime/geo/`
+
+ - documentação d3js v5
+ - `https://devdocs.io/d3~5/`
+
+ - tutoriais
+ - `https://vizhub.com/curran/8704c9b7c6df43cabf839aa3f1cb7b70?edit=files&file=bundle.js`
 
 # maranhão
  - P01 - ROSÁRIO
@@ -189,3 +198,10 @@ Nihey Takizawa <nihey.takizawa@gmail.com>
  - P019 - BAIXADA_MARANHENSE
  - P020 - ALTO_MEARIM_E_GRAJAÚ
  - P021- AGLOMERAÇÃO_URBANA_DE_SÃO_LUÍS
+
+# intalações em outras plataformas
+    - D3js
+    - `npm i d3@5.6.0`
+
+    - TopoJson
+    - `npm i topojson@3.0.2`

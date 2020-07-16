@@ -1,154 +1,138 @@
 (function (d3, topoJson) {
-    'use strict';
-    const MAP_JSON = '../maps/ma.json';
-    const DATA_JSON = '../data/data-ma.json';
-    const SIZE = {
-        wight: 480,
-        height: 720
+    const inputOptions = document.querySelectorAll('input[type="radio"]');
+    let states;
+    const state = {};
+    const brasil = {};
+
+    const SIZES = {
+        ac: { x: 1900, y: 50, scale: 4200 },
+        al: { x: -1670, y: -330, scale: 10000 },
+        am: { x: 810, y: 315, scale: 1800 },
+        ap: { x: 700, y: 1030, scale: 5500 },
+        ba: { x: -50, y: -120, scale: 3200 },
+        ce: { x: -650, y: 360, scale: 6300 },
+        df: { x: 180, y: -4700, scale: 29000 },
+        es: { x: -800, y: -1870, scale: 9000 },
+        go: { x: 400, y: -480, scale: 4400 },
+        ma: { x: 120, y: 315, scale: 3600 },
+        mg: { x: 160, y: -350, scale: 2800 },
+        ms: { x: 750, y: -830, scale: 4300 },
+        mt: { x: 650, y: -20, scale: 2700 },
+        pa: { x: 470, y: 400, scale: 2420 },
+        pb: { x: -1220, y: 100, scale: 7700 },
+        pe: { x: -540, y: 80, scale: 4800 },
+        pi: { x: -30, y: 230, scale: 4000 },
+        pr: { x: 555, y: -1400, scale: 5000 },
+        rj: { x: -400, y: -2000, scale: 8000 },
+        rn: { x: -1465, y: 315, scale: 9000 },
+        ro: { x: 1465, y: -90, scale: 4500 },
+        rr: { x: 1450, y: 940, scale: 4800 },
+        rs: { x: 670, y: -1510, scale: 4100 },
+        sc: { x: 590, y: -2000, scale: 6000 },
+        se: { x: -2480, y: -925, scale: 15000 },
+        sp: { x: 320, y: -750, scale: 3600 },
+        to: { x: 300, y: 80, scale: 3800 },
     }
-    const COLORS = {
-      pole_not_value: '#fecccc',
-      pole_value: '#e8e8e8'
-    }
 
-    const loadAndProcessData = () =>
-        Promise.all([
-          d3.json(MAP_JSON), 
-          d3.json(DATA_JSON)
-        ])
-        .then(([topoJSONData, infoDataJson]) => {
+    const loadAndProcessData = (path, camp) =>
+        Promise.all([d3.json(path)])
+            .then(([topoJSONData]) => {
 
-            const countries = topoJson
-              .feature(topoJSONData, topoJSONData.objects.polos);
-              
-            countries.features.forEach(d => {
-              Object.assign(d.properties, infoDataJson[d.id]);
-            });
+                const countries = topoJson
+                    .feature(topoJSONData, topoJSONData.objects[camp]);
 
-            return {
-              features: countries.features,
-              featuresWithPopulation: countries.features
-            };
-        })
+                return {
+                    features: countries.features
+                };
+            })
 
-    const sizeLegend = (selection, props) => {
-      const {
-        sizeScale,
-        spacing,
-        textOffset,
-        numTicks,
-        tickFormat
-      } = props;
-      
-      // gera a escala do lado do gráfico
-      const ticks = sizeScale.ticks(numTicks)
-        .filter(d => d !== 0)
-        .reverse();
-  
-      const groups = selection.selectAll('g').data(ticks);
-      
-      // cria os grupos um da scala um em cima do outro
-      const groupsEnter = groups
-          .enter()
-          .append('g')
-          .attr('class', 'tick');
+    brasil['projection'] = d3.geoMercator()
+        .scale(800)
+        .rotate([65,6,0])
+        .translate([130, 170]);
+            
+    brasil['pathGenerator'] = d3.geoPath().projection(brasil['projection']);
+    brasil['svg'] = d3.select('#brasil');
+    brasil['g'] = brasil['svg'].append('g');
 
-      // espaça os grupos entre se para poder visualizar melhor
-      groupsEnter
-        .merge(groups)
-        .attr('transform', (d, i) =>
-            `translate(0, ${i * spacing})`
-        );
-
-      groups.exit().remove();
-      
-      // adiciona um circulo identificando o grupo
-      groupsEnter.append('circle')
-          .merge(groups.select('circle'))
-          .attr('r', sizeScale);
-      
-      // adiciona o texto do grupo
-      groupsEnter.append('text')
-        .merge(groups.select('text'))
-          .text(tickFormat)
-          .attr('dy', '0.32em')
-          .attr('x', d => sizeScale(d) + textOffset);
-    };
-
-    const svg = d3.select('svg');
-    const projection = d3.geoMercator()
-        .scale(1200 * 3)
-        .rotate([45.2,6,0])
-        .translate([SIZE.wight/2, SIZE.height/2]);
-
-    const pathGenerator = d3.geoPath().projection(projection);
-    const radiusValue = d => d.properties['value'];
-    const g = svg.append('g');
-    // const colorLegendG = svg.append('g').attr('transform', `translate(40,310)`);
-    const populationFormat = d3.format(',');
-
-    g.append('path')
-      .attr('class', 'sphere')
-      .attr('d', pathGenerator({ type: 'Sphere' }));
-  
     // habilita o zoom no mapa 
-    svg.call(
-      d3.zoom().on('zoom', () => {
-        g.attr('transform', d3.event.transform);
-      })
+    brasil['svg'].call(
+        d3.zoom().on('zoom', () => {
+            brasil['g'].attr('transform', d3.event.transform);
+        })
     );
 
-    loadAndProcessData().then(polos => {
-      const sizeScale = d3.scaleSqrt()
-        .domain([0, d3.max(polos.features, radiusValue)])
-        .range([0, 33]);
+    loadAndProcessData('../maps/brasil.json', 'estados').then(states => {
+        brasil['g'].selectAll('path')
+            .data(states.features)
+            .enter()
+            .append('path')
+            .attr('class', 'states')
+            .attr('id', d => d.id)
+            .attr('d', brasil['pathGenerator'])
+            .attr('fill', '#e8e8e8')
+            .append('title')
+            .text(d => d.properties['nome']);
 
-      g.selectAll('path')
-        .data(polos.features)
-        .enter()
-        .append('path')
-        .attr('class', 'polos')
-        .attr('d', pathGenerator)
-        .attr('fill', d => 
-          (d.properties['value'] ? COLORS.pole_value : COLORS.pole_not_value)
-        )
-        .append('title')
-        .text(d =>
-          isNaN(radiusValue(d))
-            ? 'Missing data'
-            : [
-                d.properties['name'],
-                populationFormat(radiusValue(d))
-              ].join(': ')
-          );
-
-      polos.featuresWithPopulation.forEach(d => {
-        d.properties.projected = projection(d3.geoCentroid(d));
-      });
-        
-      g.selectAll('circle')
-        .data(polos.featuresWithPopulation)
-        .enter()
-        .append('circle')
-        .attr('class', 'country-circle')
-        .attr('cx', d => d.properties.projected[0])
-        .attr('cy', d => d.properties.projected[1])
-        .attr('r', d => sizeScale(radiusValue(d)));
-
-      g.append('g')
-        .attr('transform', `translate(460,415)`)
-        .call(sizeLegend, {
-          sizeScale,
-          spacing: 45,
-          textOffset: 10,
-          numTicks: 5,
-          tickFormat: populationFormat
-        })
-        .append('text')
-        .attr('class', 'legend-title')
-        .text('Population')
-        .attr('y', -45)
-        .attr('x', -30);
+        addOnclickInStates();
     });
+
+    function addOnclickInStates(){
+        states = document.querySelectorAll('.states');
+
+        states.forEach(state => {
+            state.addEventListener('click', 
+                event => selectState(event.target.id)
+            )
+        });
+    }
+
+    function selectState(id, type = 'micro', brasil = true){
+        document.querySelector('#state').innerHTML = '';
+        if (brasil){
+            document.querySelector('#micro').checked = true;
+        }
+
+        state['id'] = String(id).toLowerCase();
+
+        state['projection'] = d3.geoMercator()
+            .scale(SIZES[state['id']].scale)
+            .rotate([48, 6, 0])
+            .translate([SIZES[state['id']].x, SIZES[state['id']].y]);
+                
+        state['pathGenerator'] = d3.geoPath().projection(state['projection']);
+        state['svg'] = d3.select('#state');
+        state['g'] = state['svg'].append('g');
+
+        // habilita o zoom no mapa 
+        state['svg'].call(
+            d3.zoom().on('zoom', () => {
+                state['g'].attr('transform', d3.event.transform);
+            })
+        );
+
+        loadAndProcessData(`../topo/${state['id']}-${type}.json`, type)
+            .then(states => {
+                state['g'].selectAll('path')
+                    .data(states.features)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'divisions')
+                    .attr('d', state['pathGenerator'])
+                    .attr('fill', '#e8e8e8')
+                    .append('title')
+                    .text(d => d.properties['name']);
+        });
+    }
+
+    inputOptions.forEach(input => {
+        input.addEventListener('change', event => setTypeGraphic(event))
+    });
+
+    function setTypeGraphic(event) {
+        if (state['id']) {
+            selectState(state['id'], event.target.value, false)
+        }
+    }
 
 }(d3, topojson));

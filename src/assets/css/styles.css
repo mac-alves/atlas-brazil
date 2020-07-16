@@ -1,37 +1,82 @@
-body {
-  margin: 0px;
-  overflow: hidden;
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
 }
-  
+
+body{
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+svg {
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+  /* position: absolute; */
+  width: 560px;
+  height: 590px;
+}
+
+.container{
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+}
+
+.container main{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.section-brasil{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  /* background-color: #444444; */
+}
+
+.section-state{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  /* background-color: #444444; */
+}
+
 .sphere {
   fill: #fff;
 }
 
-.polos {
+.states,
+.divisions {
   stroke: black;
   stroke-width: 0.08px;
 }
 
-.polos:hover {
+.states:hover,
+.divisions:hover {
   fill: #74e1d8;
 }
 
-.tick text {
-  font-size: 1.3em;
-  fill: #444444;
-  font-family: sans-serif;
+.options{
+  display: flex;
+  justify-content: center;
+  /* background-color: rosybrown; */
+  margin-top: 10px;
 }
 
-.tick circle, .country-circle {
-  fill: #b38cb9;
-  fill-opacity: 0.489216;
-  stroke: black;
-  stroke-width: 0.3;
-  pointer-events: none;
+.grupo{
+  margin: 0 10px;
 }
 
-.legend-title {
-  font-size: 2.2em;
-  fill: #444444;
-  font-family: sans-serif;
+.grupo input{
+  cursor: pointer;
 }
