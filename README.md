@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img wi alt="ChatNode" width="550" src="https://res.cloudinary.com/dpf7e7tpc/image/upload/v1595019091/projetos/atlas-brasil_dpu20u.gif" />
+  <img wi alt="ChatNode" width="900" src="https://res.cloudinary.com/dpf7e7tpc/image/upload/v1595019091/projetos/atlas-brasil_dpu20u.gif" />
 </h1>
 
 <h1 align="center">
