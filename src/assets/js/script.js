@@ -1,5 +1,13 @@
 (function (d3, topoJson) {
     const inputOptions = document.querySelectorAll('input[type="radio"]');
+    const load = document.querySelector('#load');
+    const divOptions = document.querySelector('.options');
+    const titleState = document.querySelector('#title-state');
+    
+    divOptions.style.display = "none";
+    load.style.display = "none";
+    titleState.style.display = "none";
+
     let states;
     const state = {};
     const brasil = {};
@@ -70,7 +78,7 @@
             .attr('class', 'states')
             .attr('id', d => d.id)
             .attr('d', brasil['pathGenerator'])
-            .attr('fill', '#e8e8e8')
+            .attr('fill', '#0b0a0d')
             .append('title')
             .text(d => d.properties['nome']);
 
@@ -82,18 +90,24 @@
 
         states.forEach(state => {
             state.addEventListener('click', 
-                event => selectState(event.target.id)
+                event => {
+                    const name = event.target.querySelector('title').innerHTML; 
+                    selectState(event.target.id, name)
+                }
             )
         });
     }
 
-    function selectState(id, type = 'micro', brasil = true){
+    function selectState(id, name = '', type = 'micro', brasil = true){
         document.querySelector('#state').innerHTML = '';
+        load.style.display = "flex";
+
         if (brasil){
             document.querySelector('#micro').checked = true;
         }
 
         state['id'] = String(id).toLowerCase();
+        state['name'] = name;
 
         state['projection'] = d3.geoMercator()
             .scale(SIZES[state['id']].scale)
@@ -113,13 +127,18 @@
 
         loadAndProcessData(`../topo/${state['id']}-${type}.json`, type)
             .then(states => {
+                divOptions.style.display = "flex";
+                load.style.display = "none";
+                titleState.style.display = "block";
+                titleState.innerHTML = state['name'];
+                
                 state['g'].selectAll('path')
                     .data(states.features)
                     .enter()
                     .append('path')
                     .attr('class', 'divisions')
                     .attr('d', state['pathGenerator'])
-                    .attr('fill', '#e8e8e8')
+                    .attr('fill', '#0b0a0d')
                     .append('title')
                     .text(d => d.properties['name']);
         });
@@ -131,7 +150,7 @@
 
     function setTypeGraphic(event) {
         if (state['id']) {
-            selectState(state['id'], event.target.value, false)
+            selectState(state['id'], state['name'], event.target.value, false)
         }
     }
 

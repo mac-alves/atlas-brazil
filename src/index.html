@@ -12,37 +12,63 @@
 <body>
     <div class="container">
         <header>
-
+            <div class="title">
+                <h3>D3 + TopoJson - Brasil</h3>
+            </div>
         </header>
         <main>
             <section class="section-brasil">
+                <div class="title title-map">
+                    Brasil
+                </div>
                 <svg id="brasil"></svg>
             </section>
             <section class="section-state">
+                <div class="load" id="load">
+                    <p>Carregando...</p>
+                </div>
+                <div class="title title-map" id="title-state">
+                    Brasil
+                </div>
                 <svg id="state"></svg>
     
                 <div class="options">
                     <div class="grupo">
                         <input type="radio" id="micro" name="type" value="micro" checked>
-                        <label for="huey">Micro</label>
+                       
+                        <label for="micro">
+                            <div class="icon-option"></div>
+                            Micro
+                        </label>
                     </div>
                     <div class="grupo">
                         <input type="radio" id="meso" name="type" value="meso">
-                        <label for="huey">Meso</label>
+                        <label for="meso">
+                            <div class="icon-option"></div>
+                            Meso
+                        </label>
                     </div>
                     <div class="grupo">
                         <input type="radio" id="municipalities" name="type" value="municipalities">
-                        <label for="huey">Municipalities</label>
+                        <label for="municipalities">
+                            <div class="icon-option"></div>
+                            Municipalities
+                        </label>
                     </div>
                     <div class="grupo">
-                        <input type="radio" id="state" name="type" value="state">
-                        <label for="huey">State</label>
+                        <input type="radio" id="stateOp" name="type" value="state">
+                        <label for="stateOp">
+                            <div class="icon-option"></div>
+                            State
+                        </label>
                     </div>
                 </div>
             </section>
         </main>
         <footer>
-
+            <div class="credits">
+                Mauricio Alves - <a href="https://github.com/mac-alves" target="blakc">GitHub</a> 
+            </div>
         </footer>
     </div>
     
