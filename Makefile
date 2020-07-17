@@ -15,10 +15,10 @@ STATES = \
 
 all: \
 	node_modules \
-	$(addprefix topo/,$(addsuffix -municipalities.json,$(STATES))) \
-	$(addprefix topo/,$(addsuffix -micro.json,$(STATES))) \
-	$(addprefix topo/,$(addsuffix -meso.json,$(STATES))) \
-	$(addprefix topo/,$(addsuffix -state.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -municipalities.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -micro.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -meso.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -state.json,$(STATES))) \
 	permission
 
 # Install dependencies
@@ -65,7 +65,7 @@ tmp/%/: zip/%.zip
 
 # -- Generate GeoJSON files
 
-geo/%.json: tmp/%/
+public/data/geo/%.json: tmp/%/
 	mkdir -p $(dir $@)
 	ogr2ogr -f GeoJSON $@ tmp/$*/map.shp
 	iconv -f ISO-8859-1 -t UTF-8 $@ > $@.utf8
@@ -75,25 +75,25 @@ geo/%.json: tmp/%/
 # -- Generating TopoJSON files for each state
 
 # For individual states, municipality level
-topo/%-municipalities.json: geo/%-municipalities.json
+public/data/topo/%-municipalities.json: public/data/geo/%-municipalities.json
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=CD_GEOCODM -p name=NM_MUNICIP -o $@ municipalities=$^
 	touch $@
 
 # For individual states, micro-region level
-topo/%-micro.json: geo/%-micro.json
+public/data/topo/%-micro.json: public/data/geo/%-micro.json
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=NM_MICRO -p name=NM_MICRO -o $@ micro=$^
 	touch $@
 
 # For individual states, meso-region level
-topo/%-meso.json: geo/%-meso.json
+public/data/topo/%-meso.json: public/data/geo/%-meso.json
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=NM_MESO -p name=NM_MESO -o $@ meso=$^
 	touch $@
 
 # For individual states, state level:
-topo/%-state.json: geo/%-state.json
+public/data/topo/%-state.json: public/data/geo/%-state.json
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=CD_GEOCODU -p name=NM_ESTADO -p region=NM_REGIAO -o $@ state=$^
 	touch $@
@@ -101,21 +101,21 @@ topo/%-state.json: geo/%-state.json
 # -- Generating TopoJSON files for Brazil
 
 # For Brazil with municipalities
-topo/br-municipalities.json: $(addprefix geo/,$(addsuffix -municipalities.json,$(STATES)))
+public/data/topo/br-municipalities.json: $(addprefix public/data/geo/,$(addsuffix -municipalities.json,$(STATES)))
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=CD_GEOCODM -p name=NM_MUNICIP -o $@ -- $^
 	./scripts/merge.py $@ > $@.merged
 	mv $@.merged $@
 
 # For Brasil with states
-topo/br-states.json: $(addprefix geo/,$(addsuffix -state.json,$(STATES)))
+public/data/topo/br-states.json: $(addprefix public/data/geo/,$(addsuffix -state.json,$(STATES)))
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=CD_GEOCODU -p name=NM_ESTADO -p region=NM_REGIAO -o $@ -- $^
 	./scripts/merge.py $@ > $@.merged
 	mv $@.merged $@
 
 # Simplified version of state file
-topo/br-states.min.json: topo/br-states.json
+public/data/topo/br-states.min.json: public/data/topo/br-states.json
 	$(TOPOJSON) -p --simplify-proportion=.2 -o $@ -- $^
 
 # -- Clean
@@ -128,6 +128,7 @@ clean-tmp:
 clean-extra:
 	rm -rf zip
 	rm -rf tmp
+	rm -rf public/data/geo
 
 # Clean result files
 clean-result:

@@ -1,207 +1,138 @@
-# Brazil Atlas TopoJSON
+<h1 align="center">
+  <img wi alt="ChatNode" width="550" src="https://res.cloudinary.com/dpf7e7tpc/image/upload/v1595019091/projetos/atlas-brasil_dpu20u.gif" />
+</h1>
 
-Based on [Michael Bostock's us-atlas](http://github.com/mbostock/us-atlas.git), this repository is for generating [TopoJSON files](https://github.com/mbostock/topojson) for Brazilian maps.
+<h1 align="center">
+  Atlas Brazil
+</h1>
+<h3 align="center">Atlas Brazil - implementation of the generation of TopoJson maps in a graphical interface</h3>
+<br/>
+<p align="center">
 
-All maps are downloaded from [IBGE (Instituto Brasileiro de Geografia e Estatística)](http://www.ibge.gov.br/), the agency responsible for
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/mac-alves/atlas-brazil">
+
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/mac-alves/atlas-brazil">
+
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/mac-alves/atlas-brazil">
+
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/mac-alves/atlas-brazil">
+
+  <img alt="GitHub" src="https://img.shields.io/github/license/mac-alves/atlas-brazil">
+</p>
+
+<p align="center">
+    <a href="#bulb-description">Description</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#rocket-technologies">Technologies</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#information_source-how-to-use">How To Use</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#heavy_plus_sign-extra-information">Extra Information</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#link-useful-links">Useful Links</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#memo-license">License</a>
+</p>
+
+## :bulb: &nbsp;&nbsp;&nbsp; Description
+
+This project aims to implement the generation of maps in a graphical interface so that it can be used as a basis in other projects.
+
+Used based on the [Carolina](https://github.com/carolinabigonha/br-atlas) code for the generation of maps. All maps are downloaded from [IBGE (Instituto Brasileiro de Geografia e Estatística)](http://www.ibge.gov.br/), the agency responsible for
 statistical, geographic, cartographic, geodetic and environmental information
 in Brazil.
 
-## Dependencies
+Page theme based on [Rocketseat](https://app.rocketseat.com.br/) login screen interface.
 
-Firstly, this repository depends on [Node.js](http://nodejs.org/).
-You may install Node.js using the source code or a pre-built
-installer for your platform, all available at
-[Node.js download page](http://nodejs.org/download/).
+## :rocket: &nbsp;&nbsp;&nbsp; Technologies
 
-The other dependency is the
-[Geospatial Data Abstraction Library (GDAL)](http://www.gdal.org/),
-used for converting the files.
+This project was developed with the following technologies:
+-  [D3.js](https://d3js.org/)
+-  [TopoJson](https://github.com/topojson/topojson)
+-  [Make](https://www.gnu.org/software/make/)
+-  [Node.js v12.16.1][nodejs]
+-  [Express](https://expressjs.com/pt-br/)
+-  [TypeScript](https://www.typescriptlang.org/)
+-  [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
+-  [Babel](https://babeljs.io/)
+-  [Edge](https://edge.adonisjs.com/)
+-  [Express-Edge](https://github.com/ecrmnn/express-edge)
+-  [Ts-Node-Dev](https://github.com/whitecolor/ts-node-dev)
+-  [VS Code][vc] with [EditorConfig][vceditconfig]
 
-For installing GDAL on Mac, you may use [Homebrew](http://brew.sh/):
+## :bangbang: &nbsp;&nbsp;&nbsp; Dependencies
+- [Git](https://git-scm.com),
+- [GNU Make 4.1](https://www.gnu.org/software/make/)
+- [Geospatial Data Abstraction Library (GDAL)](http://www.gdal.org/)
+- [Node.js v12.16.1][nodejs] + [NPM v6.13.4][npm]
 
-```
-brew install gdal
-```
-
-Or [Mac Ports](macports.org) (still on Mac)
-
-```
-port install gdal
-```
-
-For installing it on Linux, run:
-
-```
-sudo apt-get install gdal-bin
-```
-
-## Usage
-
-Clone this repository, install the dependencies and run `make`.
+## :information_source: &nbsp;&nbsp;&nbsp; How To Use
 
 ```bash
-git clone https://github.com/carolinabigonha/br-atlas.git
-cd br-atlas
-npm install
-make
+# Install the dependencies global
+$ sudo apt-get install gdal-bin
+
+# Clone this repository
+$ git clone https://github.com/mac-alves/atlas-brazil.git
+
+# Go into the repository
+$ cd atlas-brazil/
+
+# Install dependencies
+$ npm install
+
+# Generate the json files of the maps
+$ make
+
+# delete unnecessary files
+$ make clean-extra
+
+# To run the project
+$ npm run dev
+
+
+####### Extra Commands #######
+
+# To generate the production project
+$ npm run build
+
+# Execute project in production
+$ npm start
+
+# Generate map of brazil and its municipalities
+$ make public/data/topo/br-municipalities.json
+
+# Generate map of brazil and its states
+$ make public/data/topo/br-states.json
+
+# Generate specific state maps (type = [ municipalities, meso, micro, state ])
+$ make public/data/topo/[state_abbreviation]-[type].json
+
 ```
 
-TopoJSON files will be generated inside ``topo/`` directory.
-GeoJSON files will be generated inside ``geo/`` directory.
+## :heavy_plus_sign: &nbsp;&nbsp;&nbsp; Extra Information
 
-## More Information
+- when executing the make command the TopoJSON and GeoJSON files are generated in the `topo/` and `geo/` folders.
 
-Running ``make`` will generate TopoJSON and GeoJSON files for Brazil and
-each of its states and municipalities. They are located in ``topo/`` and ``geo/`` directories.
+- the files in the `public/data/geo/`, `zip/` and `tmp/` folders are not necessary for the execution of the project. If you want to delete them, run: make clean-extra
 
-Also, several intermediate files are generated: ``zip`` and ``tmp``
-directories contain the original files downloaded and extracted from
-IBGE. If you wish to delete these extra directories (they sum up 425MB),
-run ``make clean-extra``.
-
-In addition, you can run ``make topo/br-municipalities.json`` for generating
-a Brazil map with municipalities and ``make topo/br-states.json`` for generating
-a Brazil map with states. Similarly, you may generate files for
-specific states, for example:
-``make topo/mg-municipalities.json`` or ``make topo/mg-states.json``
-for generating maps of Minas Gerais state.
-
-Feel free to contribute and add new types of maps.
-Additional source is available at ftp://geoftp.ibge.gov.br/mapas_interativos/.
-
-## Licence
-
-All files are under the BSD 3-Clause License, as stated in LICENCE.
-
-## Contributors
-Carolina Bigonha <carolinabigonha@gmail.com>
-Marcelo Pontes <balaum@gmail.com>
-João Guilherme <joaaogui@gmail.com>
-Victor Navarro <victor.matias.navarro@gmail.com>
-Nihey Takizawa <nihey.takizawa@gmail.com>
-
------------------------------------
-
-# Atlas TopoJSON do Brasil
-
-Baseado no repositório [us-atlas](http://github.com/mbostock/us-atlas.git) do grande Michael Bostock, este é um repositório para geração de mapas TopoJSON
-do Brasil.
-
-## Dependências
-
-Este repositório tem como dependência o [Node.js](http://nodejs.org/).
-Pode-se instalar o Node.js por meio do código fonte ou por instaladores
-para os diferentes sistemas operacionais, disponíveis na
-[página de instalação do Node.js](http://nodejs.org/download/).
-
-Outra dependência deste projeto é
-[Geospatial Data Abstraction Library (GDAL)](http://www.gdal.org/),
-utilizada para a conversão dos arquivos.
-
-Para instalar GDAL no Mac, utilize o [Homebrew](http://brew.sh/):
-``` 
-brew install gdal 
-```
-
-Ou [Mac Ports](http://macports.org/)
-
-``` 
-port install gdal 
-```
-
-Para instalar no Linux, execute: 
-
-``` 
-sudo apt-get install gdal-bin 
-```
-
-## Modo de uso
-
-Realize o download deste repositório, instale
-as dependências e execute `make`.
-
-Todos os mapas são extraídos do banco de dados do [IBGE (Instituto Brasileiro de Geografia e Estatística)](http://www.ibge.gov.br/), fundação pública da
-administração federal brasileira.
-
-```bash
-git clone https://github.com/carolinabigonha/br-atlas.git
-cd br-atlas
-npm install
-make
-```
-
-Os arquivos TopoJSON são gerados no diretório ``topo/``.
-Os arquivos GeoJSON são gerados no diretório ``geo/``.
-
-## Mais informações
-
-Ao rodar ``make`` arquivos TopoJSON serão gerados para o Brasil e seus
-estados na pasta ``topo/``. Arquivos GeoJSON também são gerados na
-pasta ``geo/``, como sub-produto.
-
-Além disso, as pastas ``zip/`` e ``tmp/``
-contêm os arquivos originais obtidos do IBGE.
-Se desejar apagar tais pastas
-(``shp`` possui 140 MB e ``tmp`` possui 285 MB),
-execute ``make clean-extra``.
-
-Você ainda pode gerar mapas específicos, por exemplo: ``make topo/br-municipalities.
-json`` para gerar um mapa do Brasil e seus municípios e ``make topo/br-states.
-json`` para gerar um mapa do Brasil e seus estado. Você ainda pode gerar os
-mapas para cada estado: por exemplo, ``make topo/mg-municipalities.json`` ou ``make
-topo/mg-states.json`` geram arquivos TopoJSON para os municípios e para o
-estado de Minas Gerais.
-
-Sinta-se a vontade para contribuir. Ainda faltam vários mapas para serem
-incluídos. Muitos encontrados em: ftp://geoftp.ibge.gov.br/mapas_interativos/.
-
-## Licença
-
-Todos os arquivos estão disponíveis sob a Licença BSD 3-Clause License.
-
-## Contribuidores
-Carolina Bigonha <carolinabigonha@gmail.com>
-Marcelo Pontes <balaum@gmail.com>
-João Guilherme <joaaogui@gmail.com>
-Victor Navarro <victor.matias.navarro@gmail.com>
-Nihey Takizawa <nihey.takizawa@gmail.com>
-
-# links úteis
- - posicionar mapa.
- - `http://enjalot.github.io/intro-d3/maptime/geo/`
-
- - documentação d3js v5
- - `https://devdocs.io/d3~5/`
-
- - tutoriais
- - `https://vizhub.com/curran/8704c9b7c6df43cabf839aa3f1cb7b70?edit=files&file=bundle.js`
-
-# maranhão
- - P01 - ROSÁRIO
- - P02 - PRESIDENTE_DUTRA
- - P03 - PORTO_FRANCO
- - P04 - PINDARÉ
- - P05 - MÉDIO_MEARIM
- - P06 - LITORAL_OCIDENTAL_MARANHENSE
- - P07 - LENÇÓIS_MARANHENSES
- - P08 - ITAPECURU_MIRIM
- - P09 - IMPERATRIZ
- - P010 - GURUPI
- - P011 - GERAIS_DE_BALSAS
- - P012 - COELHO_NETO
- - P013 - CODÓ
- - P014 - CHAPADINHA
- - P015 - CHAPADAS_DO_ALTO_ITAPECURU
- - P016 - CHAPADAS_DAS_MANGABEIRAS
- - P017 - CAXIAS
- - P018 - BAIXO_PARNAÍBA_MARANHENSE
- - P019 - BAIXADA_MARANHENSE
- - P020 - ALTO_MEARIM_E_GRAJAÚ
- - P021- AGLOMERAÇÃO_URBANA_DE_SÃO_LUÍS
-
-# intalações em outras plataformas
-    - D3js
+- The graphics generation script with d3js and topojson uses other versions of the libs. To install these versions on other platforms use:
     - `npm i d3@5.6.0`
-
-    - TopoJson
     - `npm i topojson@3.0.2`
+
+
+## :memo: &nbsp;&nbsp;&nbsp; License
+This project is under the MIT license. See the [LICENSE](https://github.com/mac-alves/atlas-brazil/blob/master/LICENSE) for more information.
+
+## :link: &nbsp;&nbsp;&nbsp; Useful Links
+ - [Position the Maps](http://enjalot.github.io/intro-d3/maptime/geo/).
+ - [Documentation d3js v5](https://devdocs.io/d3~5/)
+ - [tutorials](https://vizhub.com/curran/8704c9b7c6df43cabf839aa3f1cb7b70?edit=files&file=bundle.js)
+
+---
+
+## Autor
+
+:anchor: &nbsp;&nbsp; **Mauricio Alves** - *Github* - [mac-alves](https://github.com/mac-alves)
+
+
+[nodejs]: https://nodejs.org/
+[npm]: https://www.npmjs.com/
+[vc]: https://code.visualstudio.com/
+[vceditconfig]: https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+[vceslint]: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
