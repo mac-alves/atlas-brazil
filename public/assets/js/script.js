@@ -7,10 +7,11 @@
     divOptions.style.display = "none";
     load.style.display = "none";
     titleState.style.display = "none";
-
+    
     let states;
     const state = {};
     const brasil = {};
+    const newMaps = ['immediate', 'intermediate'];
 
     const SIZES = {
         ac: { x: 1900, y: 50, scale: 4200 },
@@ -91,7 +92,7 @@
         states.forEach(state => {
             state.addEventListener('click', 
                 event => {
-                    const name = event.target.querySelector('title').innerHTML; 
+                    const name = event.target.querySelector('title').innerHTML;
                     selectState(event.target.id, name)
                 }
             )
@@ -108,6 +109,7 @@
 
         state['id'] = String(id).toLowerCase();
         state['name'] = name;
+        state['type'] = newMaps.includes(type) ? 'state' : type;
 
         state['projection'] = d3.geoMercator()
             .scale(SIZES[state['id']].scale)
@@ -125,7 +127,7 @@
             })
         );
 
-        loadAndProcessData(`data/topo/${state['id']}-${type}.json`, type)
+        loadAndProcessData(`data/topo/${state['id'].toUpperCase()}-${type}.json`, state['type'])
             .then(states => {
                 divOptions.style.display = "flex";
                 load.style.display = "none";

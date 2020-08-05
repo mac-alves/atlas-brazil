@@ -9,9 +9,9 @@ TOPOJSON = node --max_old_space_size=8192 node_modules/.bin/topojson -q 1e6
 
 # All Brazilian states
 STATES = \
-	ac al am ap ba ce df es go ma \
-	mg ms mt pa pb pe pi pr rj rn \
-	ro rr rs sc se sp to
+	AC AL AM AP BA CE DF ES GO MA \
+	MG MS MT PA PB PE PI PR RJ RN \
+	RO RR RS SC SE SP TO
 
 all: \
 	node_modules \
@@ -19,6 +19,8 @@ all: \
 	$(addprefix public/data/topo/,$(addsuffix -micro.json,$(STATES))) \
 	$(addprefix public/data/topo/,$(addsuffix -meso.json,$(STATES))) \
 	$(addprefix public/data/topo/,$(addsuffix -state.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -immediate.json,$(STATES))) \
+	$(addprefix public/data/topo/,$(addsuffix -intermediate.json,$(STATES))) \
 	permission
 
 # Install dependencies
@@ -35,18 +37,22 @@ permission:
 # -- Downloading and extracting IBGE files
 
 # Downloads the zip files
-# ftp://geoftp.ibge.gov.br/malhas_digitais/municipio_2010/
+# ftp://geoftp.ibge.gov.br/malhas_digitais/municipio_2019/UFs/
 zip/%.zip:
 	$(eval STATE := $(patsubst %-municipalities,%,$*))
 	$(eval STATE := $(patsubst %-micro,%,$(STATE)))
 	$(eval STATE := $(patsubst %-meso,%,$(STATE)))
 	$(eval STATE := $(patsubst %-state,%,$(STATE)))
+	$(eval STATE := $(patsubst %-immediate,%,$(STATE)))
+	$(eval STATE := $(patsubst %-intermediate,%,$(STATE)))
 	$(eval FILENAME := $(subst -municipalities,_municipios,$*))
 	$(eval FILENAME := $(subst -micro,_microrregioes,$(FILENAME)))
 	$(eval FILENAME := $(subst -meso,_mesorregioes,$(FILENAME)))
 	$(eval FILENAME := $(subst -state,_unidades_da_federacao,$(FILENAME)))
+	$(eval FILENAME := $(subst -immediate,_regioes_geograficas_imediatas,$(FILENAME))) 
+	$(eval FILENAME := $(subst -intermediate,_regioes_geograficas_intermediarias,$(FILENAME)))
 	mkdir -p $(dir $@)
-	curl 'ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2010/$(STATE)/$(FILENAME).zip' -o $@.download
+	curl 'ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2019/UFs/$(STATE)/$(shell echo $(FILENAME) | tr A-Z a-z).zip' -o $@.download
 	mv $@.download $@
 
 # Extracts the files
@@ -58,6 +64,8 @@ tmp/%/: zip/%.zip
 	$(eval REGION := $(patsubst %-micro,micro,$*))
 	$(eval REGION := $(patsubst %-meso,meso,$*))
 	$(eval REGION := $(patsubst %-state,state,$*))
+	$(eval REGION := $(patsubst %-immediate,immediate,$*))
+	$(eval REGION := $(patsubst %-intermediate,intermediate,$*))
 	mv $@/*.shp $@/map.shp
 	mv $@/*.shx $@/map.shx
 	mv $@/*.dbf $@/map.dbf
@@ -94,6 +102,18 @@ public/data/topo/%-meso.json: public/data/geo/%-meso.json
 
 # For individual states, state level:
 public/data/topo/%-state.json: public/data/geo/%-state.json
+	mkdir -p $(dir $@)
+	$(TOPOJSON) --id-property=CD_GEOCODU -p name=NM_ESTADO -p region=NM_REGIAO -o $@ state=$^
+	touch $@
+
+# For individual states, immediate-region level:
+public/data/topo/%-immediate.json: public/data/geo/%-immediate.json
+	mkdir -p $(dir $@)
+	$(TOPOJSON) --id-property=CD_GEOCODU -p name=NM_ESTADO -p region=NM_REGIAO -o $@ state=$^
+	touch $@
+
+# For individual states, intermediate-region level:
+public/data/topo/%-intermediate.json: public/data/geo/%-intermediate.json
 	mkdir -p $(dir $@)
 	$(TOPOJSON) --id-property=CD_GEOCODU -p name=NM_ESTADO -p region=NM_REGIAO -o $@ state=$^
 	touch $@
